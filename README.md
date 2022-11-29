@@ -1,1 +1,1 @@
-# twitter-semantic-analysis-predictor
+# twitter-sentimental-analysis-predictor
