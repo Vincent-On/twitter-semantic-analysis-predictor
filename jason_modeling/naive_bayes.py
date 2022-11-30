@@ -31,16 +31,17 @@ def data_preprocessing(file_path: str, seed: int):
     return x_train, x_test, y_train, y_test
 
 
-def count_vectorizer_x_naive_bayes(n_cv: int, seed: int):
+def count_vectorizer_x_naive_bayes(n_cv: int, seed: int, file_path: str):
     """
     Creates a classification model to score political bias and returns the best model.
 
+    :param file_path: string, location of the dataset
     :param n_cv: int, number of times you'd like to cross validate
     :param seed: int, random seed for shuffling the dataset
     :return: GridSearchCV, the model
     """
     # Dataset
-    x_train, x_test, y_train, y_test = data_preprocessing('custom_set.csv', seed=seed)
+    x_train, x_test, y_train, y_test = data_preprocessing(file_path, seed=seed)
 
     # Pipeline Creation
     print("Generating Pipeline...")
@@ -77,7 +78,7 @@ def count_vectorizer_x_naive_bayes(n_cv: int, seed: int):
 
 
 def main():
-    count_vectorizer_x_naive_bayes(5, 69)
+    count_vectorizer_x_naive_bayes(5, 69, 'custom_set.csv')
     return
 
 
