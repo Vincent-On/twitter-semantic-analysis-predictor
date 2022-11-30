@@ -48,7 +48,7 @@ def word_counter(tweets: list, stop_words: list):
     word_list = pd.DataFrame(word_list.toarray(), columns=vectorizer.get_feature_names_out())
     counts = word_list.sum().sort_values(0, ascending=False)
     print(counts)
-    return
+    return counts
 
 
 def main():
