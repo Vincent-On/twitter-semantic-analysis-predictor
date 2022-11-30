@@ -28,7 +28,13 @@ class TweeterCollection:
         :return: list, containing all words in all tweets
         """
         toknizer = TweetTokenizer(strip_handles=True, reduce_len=True)
-        return toknizer.tokenize(self.get_all_tweets()[0])
+        input_tweets = self.get_all_tweets()
+        output_tweets = []
+        for tweet in input_tweets:
+            tweet = toknizer.tokenize(tweet)
+            for token in tweet:
+                output_tweets.append(token)
+        return output_tweets
 
     def get_data(self):
         """
