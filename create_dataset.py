@@ -73,11 +73,11 @@ def main():
 
     :return: None
     """
-    # left_set = pd.read_csv("left_set.csv")
-    # right_set = pd.read_csv("right_set.csv")
-    # final_set = pd.merge(left_set, right_set, how="outer")
-    # final_set.head()
-    # final_set.to_csv("custom_set.csv")
+    left_set = pd.read_csv("left_set.csv")
+    right_set = pd.read_csv("right_set.csv")
+    final_set = pd.merge(left_set, right_set, how="outer")
+    final_set.head()
+    final_set.to_csv("custom_set.csv")
 
     create_aligned_dataset(left_test, "datasets/left_set_test.csv", False, True)
     create_aligned_dataset(right_test, "datasets/right_set_test.csv", True, True)
