@@ -95,7 +95,8 @@ def evaluate_model(model: GridSearchCV, test_set: pd.DataFrame):
 
 def main():
     model = count_vectorizer_x_naive_bayes(5, 69, pd.read_csv('custom_set.csv'))
-    evaluate_model(model, pd.read_csv('final_test_set.csv'))
+    output = evaluate_model(model, pd.read_csv('final_test_set.csv'))
+    output.to_csv('output.csv')
     return
 
 
