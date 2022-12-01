@@ -7,6 +7,9 @@ from nltk.tokenize import TweetTokenizer
 
 
 class TweeterCollection:
+    """
+    Represents a collection of tweets and users.
+    """
     def __init__(self, data: pd.DataFrame):
         self.data = data
         self.tweets = self.get_all_tweets()

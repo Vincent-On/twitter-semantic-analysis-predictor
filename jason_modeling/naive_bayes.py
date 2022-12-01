@@ -1,27 +1,31 @@
 import pandas as pd
+import warnings
 
-from sklearn.feature_extraction import text
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+# sklearn imports
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.naive_bayes import MultinomialNB
 
+# Custom module imports
 from data_visualization import stop_words_master
+
+# Filter those pesky user warnings
+warnings.filterwarnings('ignore')
 """
 Multinomial Naive Bayes module
 """
 
 
-def data_preprocessing(file_path: str, seed: int):
+def data_preprocessing(seed: int, data: pd.DataFrame):
     """
     Splits the data into test and training sets randomly.
 
+    :param data: pd.DataFrame, dataset to be processed
     :param seed: int, set seed of 'random' shuffling
-    :param file_path: string, file path
     :return: tuple, 4 DataFrames that contain the training features, test features, training labels, and test labels
     respectively.
     """
-    data = pd.read_csv(file_path)
     # Split features/labels
     x = data[['User', 'Content']]
     y = data['Alignment']
@@ -31,17 +35,17 @@ def data_preprocessing(file_path: str, seed: int):
     return x_train, x_test, y_train, y_test
 
 
-def count_vectorizer_x_naive_bayes(n_cv: int, seed: int, file_path: str):
+def count_vectorizer_x_naive_bayes(n_cv: int, seed: int, data: pd.DataFrame):
     """
     Creates a classification model to score political bias and returns the best model.
 
-    :param file_path: string, location of the dataset
+    :param data: pd.DataFrame, training dataset
     :param n_cv: int, number of times you'd like to cross validate
     :param seed: int, random seed for shuffling the dataset
     :return: GridSearchCV, the model
     """
     # Dataset
-    x_train, x_test, y_train, y_test = data_preprocessing(file_path, seed=seed)
+    x_train, x_test, y_train, y_test = data_preprocessing(seed, data)
 
     # Pipeline Creation
     print("Generating Pipeline...")
@@ -54,7 +58,7 @@ def count_vectorizer_x_naive_bayes(n_cv: int, seed: int, file_path: str):
     pipe_params = {
         'cvect__max_features': [None, 25, 100, 500],
         'cvect__ngram_range': [(1, 1), (1, 2), (1, 3)],
-        'cvect__stop_words': [None, stop_words_master, 'english']
+        'cvect__stop_words': [stop_words_master, 'english']
     }
 
     # Grid search for best params
@@ -72,13 +76,26 @@ def count_vectorizer_x_naive_bayes(n_cv: int, seed: int, file_path: str):
 
     print(f"Highest Training Score: {best_score}\n"
           f"Params Used: {best_params}\n"
-          f"Training Score: {train_acc}\n"
           f"Testing Score: {test_acc}")
     return grid_search
 
 
+def evaluate_model(model: GridSearchCV, test_set: pd.DataFrame):
+    users = test_set['User']
+    labels = test_set['Alignment']
+    prediction = model.predict(test_set['Content'])
+    score = model.score(test_set['Content'], labels)
+    print(f"Prediction Percentage: {score * 100}%\n")
+    print(f"Prediction Preview: ")
+    prediction = pd.DataFrame(prediction, columns=['Prediction'])
+    output_frame = pd.concat([users, labels, prediction], axis=1)
+    print(output_frame)
+    return output_frame
+
+
 def main():
-    count_vectorizer_x_naive_bayes(5, 69, 'custom_set.csv')
+    model = count_vectorizer_x_naive_bayes(5, 69, pd.read_csv('custom_set.csv'))
+    evaluate_model(model, pd.read_csv('final_test_set.csv'))
     return
 
 
